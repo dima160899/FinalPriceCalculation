@@ -4,4 +4,4 @@
 
 app_Sale:
   path: /
-  controller: App\Controller\SaleController::index
+  controller: App\Controller\SaleController

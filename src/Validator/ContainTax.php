@@ -2,16 +2,21 @@
 
 namespace App\Validator;
 
-use App\DTO\TaxDto;
 use Symfony\Component\Validator\Constraint;
+
+/**
+ *
+ */
 class ContainTax extends Constraint
 {
     public string $message = 'Incorrect tax index';
-    public TaxDto $taxDto;
-    public function __construct(TaxDto $taxDto ,array $options = [], array $groups = null, mixed $payload = null)
-    {
+
+    public function __construct(
+        array $options = [],
+        array $groups = null,
+        mixed $payload = null
+    ) {
         parent::__construct($options, $groups, $payload);
-        $this->taxDto = $taxDto;
     }
 
     /**
@@ -25,6 +30,6 @@ class ContainTax extends Constraint
      */
     public function validatedBy(): string
     {
-        return static::class.'Validator';
+        return static::class . 'Validator';
     }
 }

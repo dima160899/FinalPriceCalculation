@@ -1,17 +1,25 @@
 <?php
+
 namespace App\Validator;
 
+use App\Repository\CountryTaxRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
-use function PHPUnit\Framework\equalTo;
 
 /**
  *
  */
 class ContainTaxValidator extends ConstraintValidator
 {
+    private CountryTaxRepository $countryTaxRepository;
+
+    public function __construct(CountryTaxRepository $countryTaxRepository)
+    {
+        $this->countryTaxRepository = $countryTaxRepository;
+    }
+
     /**
      * Checks if the passed value is valid.
      *
@@ -19,6 +27,7 @@ class ContainTaxValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint): void
     {
+        $countryTaxes = $this->countryTaxRepository->findAll();
         if (!$constraint instanceof ContainTax) {
             throw new UnexpectedTypeException($constraint, ContainTax::class);
         }
@@ -29,10 +38,14 @@ class ContainTaxValidator extends ConstraintValidator
         $isNotValid = true;
         if (!preg_match('/^[A-Z][A-Z][0-9]+$/', $value)) {
             $this->fail($constraint);
+
             return;
         }
-        foreach ($constraint->taxDto->getCountryIndexes() as $taxIndex => $taxNumberCount) {
-            if ((\strlen($value) - 2 === $taxNumberCount) && similar_text($value, $taxIndex) === 2) {
+        foreach ($countryTaxes as $countryTax) {
+            if ((\strlen($value) - 2 === $countryTax->getTaxIndexNumberCount()) && similar_text(
+                    $value,
+                    $countryTax->getTaxIndexName()
+                ) === 2) {
                 $isNotValid = false;
             }
         }

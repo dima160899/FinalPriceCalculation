@@ -28,7 +28,7 @@ class SaleType extends AbstractType
             ])
             ->add('taxIndex', TextType::class, [
                 'required' => true,
-                'constraints' => [new ContainTax($options['taxDto'])]
+                'constraints' => [new ContainTax()]
             ])
             ->add('submit', SubmitType::class)
         ;
@@ -40,8 +40,7 @@ class SaleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Sale::class,
-            'taxDto' => TaxDto::class,
+            'data_class' => Sale::class
         ]);
     }
 }
